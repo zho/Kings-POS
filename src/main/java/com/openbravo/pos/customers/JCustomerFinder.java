@@ -145,7 +145,8 @@ public class JCustomerFinder extends javax.swing.JDialog implements EditorCreato
 
         jListCustomers.setCellRenderer(new CustomerRenderer());
 
-        getRootPane().setDefaultButton(jcmdOK);
+//        getRootPane().setDefaultButton(jcmdOK);
+        getRootPane().setDefaultButton(jbtnExecute);
 
         m_ReturnCustomer = null;
         m_jKeys.setCustomerFinder(this);
@@ -205,6 +206,10 @@ public class JCustomerFinder extends javax.swing.JDialog implements EditorCreato
             jListCustomers.setModel(new MyListData(lpr.loadData()));
             if (jListCustomers.getModel().getSize() > 0) {
                 jListCustomers.setSelectedIndex(0);
+
+                if(jListCustomers.getModel().getSize() == 1) {
+                    jcmdOK.doClick();
+                }
             } else {
                 if(!m_jtxtName.getText().equals("")) {
                     
