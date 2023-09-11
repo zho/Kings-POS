@@ -22,19 +22,18 @@ package com.openbravo.pos.forms;
 import com.openbravo.pos.config.JFrmConfig;
 import com.openbravo.pos.instance.AppMessage;
 import com.openbravo.pos.instance.InstanceManager;
-
-import java.awt.BorderLayout;
-import java.io.IOException;
-import java.rmi.AlreadyBoundException;
-import java.rmi.RemoteException;
-import javax.imageio.ImageIO;
-import javax.swing.JFrame;
-
 import com.openbravo.pos.scripting.ScriptEngine;
 import com.openbravo.pos.scripting.ScriptException;
 import com.openbravo.pos.scripting.ScriptFactory;
 import com.openbravo.pos.util.AltEncrypter;
 import com.openbravo.pos.util.OSValidator;
+
+import javax.imageio.ImageIO;
+import javax.swing.*;
+import java.awt.*;
+import java.io.IOException;
+import java.rmi.AlreadyBoundException;
+import java.rmi.RemoteException;
 
 /**
  * @author adrianromero
@@ -156,7 +155,7 @@ public class JRootFrame extends javax.swing.JFrame implements AppMessage {
 
     private void formWindowClosed(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosed
 
-        m_rootapp.releaseResources();
+//        m_rootapp.releaseResources();
         System.exit(0);
 
     }//GEN-LAST:event_formWindowClosed

@@ -1,0 +1,14 @@
+report = new com.openbravo.pos.reports.kings.KingsPanelReportBean();
+
+report.setTitleKey("JWS.Title.TokoBarangBon");
+report.setReport("/com/openbravo/reports/toko_barang_bon");
+report.setResourceBundle("com/openbravo/reports/sales_messages");
+
+report.addParameter("tgl_transaksi");
+report.addParameter("tgl_transaksi");
+
+paramdates = new com.openbravo.pos.reports.kings.JParamsDate();
+paramdates.setDate(com.openbravo.beans.DateUtils.getToday());
+report.addQBFFilter(paramdates);
+
+report;

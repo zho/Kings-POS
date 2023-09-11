@@ -16,11 +16,7 @@
  */
 package com.openbravo.pos.util;
 
-import java.awt.BorderLayout;
-import java.awt.Dimension;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-
+import com.sun.javafx.application.PlatformImpl;
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.embed.swing.JFXPanel;
@@ -31,38 +27,31 @@ import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 import javafx.stage.Stage;
 
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.SwingUtilities;
-
-import com.sun.javafx.application.PlatformImpl;
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 /**
  * SwingFXWebView
  */
-public class FXWeb extends JPanel
-{
-    private Stage     stage;
-    private WebView   browser;
-    private JFXPanel  jfxPanel;
-    private JButton   swingButton;
+public class FXWeb extends JPanel {
+    private Stage stage;
+    private WebView browser;
+    private JFXPanel jfxPanel;
+    private JButton swingButton;
     private WebEngine webEngine;
-    private Object    geo;
+    private Object geo;
 
-    public FXWeb()
-    {
+    public FXWeb() {
         this.initComponents();
     }
 
-    public static void main(final String... args)
-    {
+    public static void main(final String... args) {
         // Run this later:
-        SwingUtilities.invokeLater(new Runnable()
-        {
+        SwingUtilities.invokeLater(new Runnable() {
             @Override
-            public void run()
-            {
+            public void run() {
                 final JFrame frame = new JFrame();
                 frame.getContentPane().add(new FXWeb());
                 frame.setMinimumSize(new Dimension(640, 480));
@@ -72,25 +61,20 @@ public class FXWeb extends JPanel
         });
     }
 
-    private void initComponents()
-    {
+    private void initComponents() {
         this.jfxPanel = new JFXPanel();
         this.createScene();
         this.setLayout(new BorderLayout());
         this.add(this.jfxPanel, BorderLayout.CENTER);
         this.swingButton = new JButton();
-        this.swingButton.addActionListener(new ActionListener()
-        {
+        this.swingButton.addActionListener(new ActionListener() {
 
             @Override
-            public void actionPerformed(final ActionEvent e)
-            {
-                Platform.runLater(new Runnable()
-                {
+            public void actionPerformed(final ActionEvent e) {
+                Platform.runLater(new Runnable() {
 
                     @Override
-                    public void run()
-                    {
+                    public void run() {
                         FXWeb.this.webEngine.reload();
                     }
                 });
@@ -104,8 +88,7 @@ public class FXWeb extends JPanel
      * createScene Note: Key is that Scene needs to be created and run on
      * "FX user thread" NOT on the AWT-EventQueue Thread
      */
-    private void createScene()
-    {
+    private void createScene() {
         PlatformImpl.startup(() -> {
             FXWeb.this.stage = new Stage();
             FXWeb.this.stage.setTitle("Hello Java FX");

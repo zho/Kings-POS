@@ -134,7 +134,7 @@
 				<textElement textAlignment="Right">
 					<font fontName="SansSerif" size="32" isBold="true" isItalic="false" pdfFontName="Helvetica-Bold"/>
 				</textElement>
-				<textFieldExpression><![CDATA[com.openbravo.format.Formats.CURRENCY.formatValue($F{PRICESELL} * $F{TAXRATE})]]></textFieldExpression>
+				<textFieldExpression><![CDATA[com.openbravo.format.Formats.CURRENCY.formatValue(new Double($F{PRICESELL}.doubleValue() * $F{TAXRATE}.doubleValue()))]]></textFieldExpression>
 			</textField>
 			<image scaleImage="RetainShape" hAlign="Center" vAlign="Middle">
 				<reportElement key="barcode-1" x="13" y="167" width="150" height="46" uuid="d9809aed-66b1-4e81-a15f-22233dd9f695"/>
@@ -183,7 +183,7 @@
 				<textElement textAlignment="Right">
 					<font fontName="SansSerif"/>
 				</textElement>
-				<textFieldExpression><![CDATA[com.openbravo.format.Formats.CURRENCY.formatValue(($F{PRICESELL} * $F{TAXRATE}) - $F{PRICESELL})]]></textFieldExpression>
+				<textFieldExpression><![CDATA[com.openbravo.format.Formats.CURRENCY.formatValue(new Double(($F{PRICESELL}.doubleValue() * $F{TAXRATE}.doubleValue()) - $F{PRICESELL}.doubleValue()))]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="14" y="85" width="77" height="18" uuid="942bf3ae-6b02-4b16-ad31-b5bc0afbc28d"/>

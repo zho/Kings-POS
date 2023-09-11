@@ -19,6 +19,8 @@
 
 package com.openbravo.pos.forms;
 
+
+import com.alee.extended.statusbar.WebMemoryBar;
 import com.openbravo.basic.BasicException;
 import com.openbravo.beans.JFlowPanel;
 import com.openbravo.beans.JPasswordDialog;
@@ -34,45 +36,29 @@ import com.openbravo.pos.printer.TicketPrinterException;
 import com.openbravo.pos.scale.DeviceScale;
 import com.openbravo.pos.scanpal2.DeviceScanner;
 import com.openbravo.pos.scanpal2.DeviceScannerFactory;
-import java.awt.CardLayout;
-import java.awt.ComponentOrientation;
-import java.awt.Cursor;
-import java.awt.Dimension;
+import org.joda.time.DateTime;
+import org.joda.time.Instant;
+
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.*;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.net.InetAddress;
-import java.net.InetSocketAddress;
-import java.net.Socket;
-import java.net.SocketAddress;
-import java.net.UnknownHostException;
-import java.sql.Connection;
-import java.sql.DatabaseMetaData;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.net.*;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
+import java.sql.*;
 import java.text.DateFormat;
+import java.util.Date;
 import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
-import javax.swing.*;     
-import org.joda.time.DateTime;
-import com.dalsemi.onewire.OneWireAccessProvider;
-import com.dalsemi.onewire.adapter.DSPortAdapter;
-import com.dalsemi.onewire.OneWireException;
-import com.dalsemi.onewire.container.OneWireContainer;
-import com.dalsemi.onewire.utils.*;
-import com.dalsemi.onewire.application.monitor.*;
-import com.openbravo.pos.util.uOWWatch;
-import com.unicenta.pos.util.FtpUpload;
-import org.joda.time.Instant;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.nio.file.StandardOpenOption;
 
 
 /**
@@ -80,7 +66,7 @@ import java.nio.file.StandardOpenOption;
  * @author adrianromero
  */
 // public class JRootApp extends JPanel implements AppView {
-public class JRootApp extends JPanel implements AppView, DeviceMonitorEventListener  {
+public class JRootApp extends JPanel implements AppView  {
 
     private AppProperties m_props;
     private Session session;     
@@ -201,126 +187,126 @@ public class JRootApp extends JPanel implements AppView, DeviceMonitorEventListe
         initComponents ();            
         jScrollPane1.getVerticalScrollBar().setPreferredSize(new Dimension(30, 30));
         serverMonitor.setVisible(false);
-        webMemoryBar1.setShowMaximumMemory ( true );
+//        webMemoryBar1.setShowMaximumMemory ( true );
     }
-    private DSPortAdapter m_oneWireAdapter;
-    private DeviceMonitor m_oneWireMonitor;
+//    private DSPortAdapter m_oneWireAdapter;
+//    private DeviceMonitor m_oneWireMonitor;
         
-    private void initIButtonMonitor() {
-
-        assert m_oneWireMonitor == null;
-        try
-        {
-            m_oneWireAdapter = OneWireAccessProvider.getDefaultAdapter();
-            m_oneWireAdapter.setSearchAllDevices();
-            m_oneWireAdapter.targetFamily(0x01);
-            m_oneWireAdapter.setSpeed(DSPortAdapter.SPEED_REGULAR);
-            m_oneWireMonitor = new DeviceMonitor(m_oneWireAdapter);
-// Normal state
-            m_oneWireMonitor.setMaxStateCount(5);            
-// Use for testing
-//            m_oneWireMonitor.setMaxStateCount(100);                        
-            m_oneWireMonitor.addDeviceMonitorEventListener(this);
-            new Thread(m_oneWireMonitor).start();
-    }
-        catch (OneWireException e) {
-            JMessageDialog.showMessage(this, 
-                new MessageInf(MessageInf.SGN_WARNING, 
-                AppLocal.getIntString("message.ibuttonnotfound"), e));
-        }
-    }
-    private void shutdownIButtonMonitor() {
-        if(m_oneWireMonitor != null) {
-            m_oneWireMonitor.killMonitor();
-            try {
-                m_oneWireAdapter.freePort();
-            }
-            catch (OneWireException e) {
-//                System.out.println(e);
-            }
-        }
-    }
-    public void releaseResources() {
-        shutdownIButtonMonitor();
-    }
+//    private void initIButtonMonitor() {
+//
+//        assert m_oneWireMonitor == null;
+//        try
+//        {
+//            m_oneWireAdapter = OneWireAccessProvider.getDefaultAdapter();
+//            m_oneWireAdapter.setSearchAllDevices();
+//            m_oneWireAdapter.targetFamily(0x01);
+//            m_oneWireAdapter.setSpeed(DSPortAdapter.SPEED_REGULAR);
+//            m_oneWireMonitor = new DeviceMonitor(m_oneWireAdapter);
+//// Normal state
+//            m_oneWireMonitor.setMaxStateCount(5);
+//// Use for testing
+////            m_oneWireMonitor.setMaxStateCount(100);
+//            m_oneWireMonitor.addDeviceMonitorEventListener(this);
+//            new Thread(m_oneWireMonitor).start();
+//    }
+//        catch (OneWireException e) {
+//            JMessageDialog.showMessage(this,
+//                new MessageInf(MessageInf.SGN_WARNING,
+//                AppLocal.getIntString("message.ibuttonnotfound"), e));
+//        }
+//    }
+//    private void shutdownIButtonMonitor() {
+//        if(m_oneWireMonitor != null) {
+//            m_oneWireMonitor.killMonitor();
+//            try {
+//                m_oneWireAdapter.freePort();
+//            }
+//            catch (OneWireException e) {
+////                System.out.println(e);
+//            }
+//        }
+//    }
+//    public void releaseResources() {
+//        shutdownIButtonMonitor();
+//    }
     
     final static int UNIQUE_KEY_FAMILY = 0x01;
     
-    private boolean isDeviceRelevant(OneWireContainer container) {
-        String iButtonId = container.getAddressAsString();
-        try {
-            if(container.getAdapter().getAdapterAddress().equals(iButtonId))
-                return false;
-        } catch(OneWireException e) {
-        }
-        
-        int familyNumber = Address.toByteArray(iButtonId)[0];
-        return (familyNumber == UNIQUE_KEY_FAMILY);
-    }
+//    private boolean isDeviceRelevant(OneWireContainer container) {
+//        String iButtonId = container.getAddressAsString();
+//        try {
+//            if(container.getAdapter().getAdapterAddress().equals(iButtonId))
+//                return false;
+//        } catch(OneWireException e) {
+//        }
+//
+//        int familyNumber = Address.toByteArray(iButtonId)[0];
+//        return (familyNumber == UNIQUE_KEY_FAMILY);
+//    }
     
     /** Called when an iButton is inserted.
      * @param devt */
-    @Override
-    public void deviceArrival(DeviceMonitorEvent devt) {
-        assert m_dlSystem != null;
-        
-        for (int i = 0; i < devt.getDeviceCount(); i++) {
-            OneWireContainer container = devt.getContainerAt(i);            
-            if(!isDeviceRelevant(container))
-                continue;
-            
-            String iButtonId = devt.getAddressAsStringAt(i);
-            
-            AppUser user = null;
-            try {
-                user = m_dlSystem.findPeopleByCard(iButtonId);
-            } catch (BasicException e) {
-                if (user == null) {
-                    JOptionPane.showMessageDialog(this, 
-                        AppLocal.getIntString("message.ibuttonnotassign"), 
-                        AppLocal.getIntString("title.editor"), 
-                        JOptionPane.INFORMATION_MESSAGE);
-                }                 
-            }
-            
-            if (user == null) {
-                JOptionPane.showMessageDialog(this, 
-                    AppLocal.getIntString("message.ibuttonnotassign"), 
-                    AppLocal.getIntString("title.editor"), 
-                    JOptionPane.INFORMATION_MESSAGE);
-        
-            } else {
-                setVisible(false);
-                openAppView(user);
-                setVisible(true);
-            }
-        }
-    }
-    /** Called when an iButton is removed.
-     * @param devt */
-    @Override
-    public void deviceDeparture(DeviceMonitorEvent devt) {
-
-        for(int i = 0; i < devt.getDeviceCount(); i++) {
-            OneWireContainer container = devt.getContainerAt(i);
-            if(!isDeviceRelevant(container))
-                continue;
-            
-            String iButtonId = devt.getAddressAsStringAt(i);
-            
-            if(m_principalapp != null) {
-                AppUser currentUser = m_principalapp.getUser();
-                if(currentUser != null && currentUser.getCard().equals(iButtonId))
-                    closeAppView();
-            }
-        }
-    }
+//    @Override
+//    public void deviceArrival(DeviceMonitorEvent devt) {
+//        assert m_dlSystem != null;
+//
+//        for (int i = 0; i < devt.getDeviceCount(); i++) {
+//            OneWireContainer container = devt.getContainerAt(i);
+//            if(!isDeviceRelevant(container))
+//                continue;
+//
+//            String iButtonId = devt.getAddressAsStringAt(i);
+//
+//            AppUser user = null;
+//            try {
+//                user = m_dlSystem.findPeopleByCard(iButtonId);
+//            } catch (BasicException e) {
+//                if (user == null) {
+//                    JOptionPane.showMessageDialog(this,
+//                        AppLocal.getIntString("message.ibuttonnotassign"),
+//                        AppLocal.getIntString("title.editor"),
+//                        JOptionPane.INFORMATION_MESSAGE);
+//                }
+//            }
+//
+//            if (user == null) {
+//                JOptionPane.showMessageDialog(this,
+//                    AppLocal.getIntString("message.ibuttonnotassign"),
+//                    AppLocal.getIntString("title.editor"),
+//                    JOptionPane.INFORMATION_MESSAGE);
+//
+//            } else {
+//                setVisible(false);
+//                openAppView(user);
+//                setVisible(true);
+//            }
+//        }
+//    }
+//    /** Called when an iButton is removed.
+//     * @param devt */
+//    @Override
+//    public void deviceDeparture(DeviceMonitorEvent devt) {
+//
+//        for(int i = 0; i < devt.getDeviceCount(); i++) {
+//            OneWireContainer container = devt.getContainerAt(i);
+//            if(!isDeviceRelevant(container))
+//                continue;
+//
+//            String iButtonId = devt.getAddressAsStringAt(i);
+//
+//            if(m_principalapp != null) {
+//                AppUser currentUser = m_principalapp.getUser();
+//                if(currentUser != null && currentUser.getCard().equals(iButtonId))
+//                    closeAppView();
+//            }
+//        }
+//    }
     
-    @Override
-    public void networkException(DeviceMonitorException dexc)
-    {
-//        System.out.println("ERROR: " + dexc.toString());
-    }
+//    @Override
+//    public void networkException(DeviceMonitorException dexc)
+//    {
+////        System.out.println("ERROR: " + dexc.toString());
+//    }
     
     /**
      *
@@ -548,11 +534,11 @@ public class JRootApp extends JPanel implements AppView, DeviceMonitorEventListe
            
         showLogin();
         
-        String ibutton = m_props.getProperty("machine.iButton");        
-        if(ibutton.equals("true")) {
-            initIButtonMonitor();
-            uOWWatch.iButtonOn();
-        }    
+//        String ibutton = m_props.getProperty("machine.iButton");
+//        if(ibutton.equals("true")) {
+////            initIButtonMonitor();
+//            //uOWWatch.iButtonOn();
+//        }
         return true;
     }
    
@@ -568,7 +554,7 @@ public class JRootApp extends JPanel implements AppView, DeviceMonitorEventListe
         
         if (closeAppView()) {
                 m_TP.getDeviceDisplay().clearVisor();
-                shutdownIButtonMonitor();
+//                shutdownIButtonMonitor();
 
 // delete the open.db tracking file
                 String sUserPath = System.getProperty("user.home");
@@ -983,7 +969,7 @@ public class JRootApp extends JPanel implements AppView, DeviceMonitorEventListe
         m_jPanelDown = new javax.swing.JPanel();
         panelTask = new javax.swing.JPanel();
         m_jHost = new javax.swing.JLabel();
-        webMemoryBar1 = new com.alee.extended.statusbar.WebMemoryBar();
+        webMemoryBar1 = new WebMemoryBar();
         serverMonitor = new com.alee.laf.progressbar.WebProgressBar();
         jPanel3 = new javax.swing.JPanel();
 
@@ -1001,7 +987,7 @@ public class JRootApp extends JPanel implements AppView, DeviceMonitorEventListe
         m_jPanelTitle.add(m_jLblTitle, java.awt.BorderLayout.CENTER);
 
         poweredby.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        poweredby.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/openbravo/images/poweredby_uni.png"))); // NOI18N
+        // poweredby.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/openbravo/images/poweredby_uni.png"))); // NOI18N
         poweredby.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 5, 0, 5));
         poweredby.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
         poweredby.setMaximumSize(new java.awt.Dimension(180, 34));
@@ -1024,16 +1010,16 @@ public class JRootApp extends JPanel implements AppView, DeviceMonitorEventListe
         jLabel1.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/openbravo/images/unicenta.png"))); // NOI18N
-        jLabel1.setText("<html><center>uniCenta oPOS - Touch Friendly Point of Sale<br>" +
-            "Copyright \u00A9 2009-2017 uniCenta <br>" +
-            "https://unicenta.com<br>" +
-            "<br>" +
-            "uniCenta oPOS is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.<br>" +
-            "<br>" +
-            "uniCenta oPOS is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.<br>" +
-            "<br>" +
-            "You should have received a copy of the GNU General Public License along with uniCenta oPOS.  If not, see http://www.gnu.org/licenses/<br>" +
-            "</center>");
+//        jLabel1.setText("<html><center>uniCenta oPOS - Touch Friendly Point of Sale<br>" +
+//            "Copyright \u00A9 2009-2017 uniCenta <br>" +
+//            "https://unicenta.com<br>" +
+//            "<br>" +
+//            "uniCenta oPOS is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.<br>" +
+//            "<br>" +
+//            "uniCenta oPOS is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.<br>" +
+//            "<br>" +
+//            "You should have received a copy of the GNU General Public License along with uniCenta oPOS.  If not, see http://www.gnu.org/licenses/<br>" +
+//            "</center>");
         jLabel1.setAlignmentX(0.5F);
         jLabel1.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jLabel1.setMaximumSize(new java.awt.Dimension(800, 1024));
@@ -1145,19 +1131,19 @@ public class JRootApp extends JPanel implements AppView, DeviceMonitorEventListe
         panelTask.add(m_jHost);
 
         webMemoryBar1.setBackground(new java.awt.Color(153, 153, 153));
-        webMemoryBar1.setText("");
+//        webMemoryBar1.setText("");
         webMemoryBar1.setFont(new java.awt.Font("Arial", 0, 11)); // NOI18N
         webMemoryBar1.setPreferredSize(new java.awt.Dimension(150, 30));
-        webMemoryBar1.setUsedBorderColor(new java.awt.Color(0, 204, 204));
-        webMemoryBar1.setUsedFillColor(new java.awt.Color(0, 204, 255));
+//        webMemoryBar1.setUsedBorderColor(new java.awt.Color(0, 204, 204));
+//        webMemoryBar1.setUsedFillColor(new java.awt.Color(0, 204, 255));
         panelTask.add(webMemoryBar1);
 
         serverMonitor.setToolTipText("");
         serverMonitor.setFont(new java.awt.Font("Arial", 0, 12)); // NOI18N
         serverMonitor.setMaximumSize(new java.awt.Dimension(50, 18));
         serverMonitor.setPreferredSize(new java.awt.Dimension(150, 30));
-        serverMonitor.setProgressBottomColor(new java.awt.Color(76, 197, 237));
-        serverMonitor.setRound(2);
+//        serverMonitor.setProgressBottomColor(new java.awt.Color(76, 197, 237));
+//        serverMonitor.setRound(2);
         serverMonitor.setString("Keep Alive");
         serverMonitor.setStringPainted(true);
         panelTask.add(serverMonitor);
@@ -1204,6 +1190,6 @@ public class JRootApp extends JPanel implements AppView, DeviceMonitorEventListe
     private javax.swing.JPanel panelTask;
     private javax.swing.JLabel poweredby;
     private com.alee.laf.progressbar.WebProgressBar serverMonitor;
-    private com.alee.extended.statusbar.WebMemoryBar webMemoryBar1;
+    private WebMemoryBar webMemoryBar1;
     // End of variables declaration//GEN-END:variables
 }

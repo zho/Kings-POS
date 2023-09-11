@@ -20,44 +20,33 @@
 package com.unicenta.pos.transfer;
 
 
-
+import com.alee.extended.statusbar.WebMemoryBar;
+import com.alee.laf.progressbar.WebProgressBar;
+import com.openbravo.basic.BasicException;
+import com.openbravo.data.gui.JMessageDialog;
+import com.openbravo.data.gui.MessageInf;
 import com.openbravo.data.loader.BatchSentence;
 import com.openbravo.data.loader.BatchSentenceResource;
+import com.openbravo.data.loader.Session;
+import com.openbravo.data.user.DirtyManager;
 import com.openbravo.pos.config.PanelConfig;
 import com.openbravo.pos.forms.*;
 import com.openbravo.pos.util.AltEncrypter;
 import com.openbravo.pos.util.DirectoryEvent;
 
-import java.awt.HeadlessException;
+import javax.swing.*;
+import java.awt.*;
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
-import java.sql.Connection;
-import java.sql.Driver;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.Properties;
-import java.util.regex.Matcher;
-import javax.swing.*;
-
-import com.openbravo.basic.BasicException;
-import com.openbravo.data.gui.JMessageDialog;
-import com.openbravo.data.gui.MessageInf;
-import com.openbravo.data.user.DirtyManager;
-import com.openbravo.pos.forms.AppLocal;
-import com.openbravo.pos.forms.AppView;
-import java.awt.Color;
-import java.sql.BatchUpdateException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.JPanel;
-import com.openbravo.data.loader.Session;
+import java.util.regex.Matcher;
 
 /**
  *
@@ -302,7 +291,7 @@ public final class Transfer extends JPanel implements JPanelView {
         try {
             txtOut.append("Adding Foreign Keys" + "\n");
             webPBar.setString("Adding Keys...");
-            webPBar.setBgBottom(Color.MAGENTA);
+//            webPBar.setBgBottom(Color.MAGENTA);
             BatchSentence bsentence = new BatchSentenceResource(session_target, targetFKadd);
             
             java.util.List l = bsentence.list();
@@ -2077,7 +2066,7 @@ public final class Transfer extends JPanel implements JPanelView {
                     txtOut.append("Data Transfer Complete" + "\n");
                    
                     webPBar.setString("Finished!");
-                    webPBar.setBgBottom(Color.GREEN);                    
+//                    webPBar.setBgBottom(Color.GREEN);
                     jbtnTransfer.setEnabled(true);
 
                     JOptionPane.showMessageDialog(this
@@ -2222,7 +2211,7 @@ public final class Transfer extends JPanel implements JPanelView {
         jlblDBSize = new javax.swing.JLabel();
         jtxtDbName = new com.alee.laf.text.WebTextField();
         jbtnTransfer = new javax.swing.JButton();
-        webMemoryBar = new com.alee.extended.statusbar.WebMemoryBar();
+        webMemoryBar = new WebMemoryBar();
         jLabel10 = new javax.swing.JLabel();
         jLabel15 = new javax.swing.JLabel();
         jbtnSet = new javax.swing.JButton();
@@ -2370,9 +2359,9 @@ public final class Transfer extends JPanel implements JPanelView {
         });
 
         webPBar.setFont(new java.awt.Font("Arial", 0, 13)); // NOI18N
-        webPBar.setHighlightDarkWhite(new java.awt.Color(204, 0, 0));
+//        webPBar.setHighlightDarkWhite(new java.awt.Color(204, 0, 0));
         webPBar.setPreferredSize(new java.awt.Dimension(240, 30));
-        webPBar.setProgressBottomColor(new java.awt.Color(0, 153, 255));
+//        webPBar.setProgressBottomColor(new java.awt.Color(0, 153, 255));
 
         jtxtDbServerPort.setForeground(new java.awt.Color(51, 51, 51));
         jtxtDbServerPort.setToolTipText(bundle.getString("tootltip.servernameport")); // NOI18N
@@ -2469,11 +2458,11 @@ public final class Transfer extends JPanel implements JPanelView {
         });
 
         webMemoryBar.setBackground(new java.awt.Color(153, 153, 153));
-        webMemoryBar.setText("Text");
+//        webMemoryBar.setText("Text");
         webMemoryBar.setFont(new java.awt.Font("Arial", 0, 12)); // NOI18N
         webMemoryBar.setPreferredSize(new java.awt.Dimension(150, 30));
-        webMemoryBar.setUsedBorderColor(new java.awt.Color(0, 204, 204));
-        webMemoryBar.setUsedFillColor(new java.awt.Color(0, 204, 255));
+//        webMemoryBar.setUsedBorderColor(new java.awt.Color(0, 204, 204));
+//        webMemoryBar.setUsedFillColor(new java.awt.Color(0, 204, 255));
 
         jLabel10.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
         jLabel10.setForeground(new java.awt.Color(102, 102, 102));
@@ -3029,8 +3018,8 @@ public final class Transfer extends JPanel implements JPanelView {
     private com.alee.laf.text.WebPasswordField txtDbPass;
     private com.alee.laf.text.WebTextField txtDbUser;
     private javax.swing.JTextArea txtOut;
-    private com.alee.extended.statusbar.WebMemoryBar webMemoryBar;
-    private com.alee.laf.progressbar.WebProgressBar webPBar;
+    private WebMemoryBar webMemoryBar;
+    private WebProgressBar webPBar;
     // End of variables declaration//GEN-END:variables
 
 }

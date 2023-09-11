@@ -22,19 +22,19 @@ package com.openbravo.pos.admin;
 import com.openbravo.basic.BasicException;
 import com.openbravo.data.gui.ComboBoxValModel;
 import com.openbravo.data.loader.SentenceList;
-import com.openbravo.data.user.*;
+import com.openbravo.data.user.DirtyManager;
+import com.openbravo.data.user.EditorRecord;
 import com.openbravo.format.Formats;
 import com.openbravo.pos.forms.AppLocal;
 import com.openbravo.pos.util.Hashcypher;
 import com.openbravo.pos.util.StringUtils;
-import com.openbravo.pos.util.uOWWatch;
-import java.awt.Component;
-import java.awt.Toolkit;
+
+import javax.swing.*;
+import java.awt.*;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
 import java.awt.image.BufferedImage;
 import java.util.UUID;
-import javax.swing.*;
 
 /**
  *
@@ -426,7 +426,7 @@ public class PeopleView extends JPanel implements EditorRecord {
                 JOptionPane.INFORMATION_MESSAGE) == JOptionPane.OK_OPTION) 
 
             {  
-                m_jcard.setText( uOWWatch.getibuttonid() );
+//                m_jcard.setText( uOWWatch.getibuttonid() );
                 jLblCardID.setText(AppLocal.getIntString("label.ibutton"));
                 m_Dirty.setDirty(true);
             }

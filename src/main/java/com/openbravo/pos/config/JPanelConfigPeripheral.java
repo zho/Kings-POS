@@ -23,10 +23,10 @@ import com.openbravo.pos.forms.AppConfig;
 import com.openbravo.pos.forms.AppLocal;
 import com.openbravo.pos.util.ReportUtils;
 import com.openbravo.pos.util.StringParser;
-import java.awt.CardLayout;
-import java.awt.Component;
+
 import javax.print.PrintService;
 import javax.print.PrintServiceLookup;
+import java.awt.*;
 
 
 /**
@@ -1958,7 +1958,7 @@ public class JPanelConfigPeripheral extends javax.swing.JPanel implements PanelC
         webSlider.setSnapToTicks(true);
         webSlider.setToolTipText("");
         webSlider.setValue(5);
-        webSlider.setAnimated(false);
+//        webSlider.setAnimated(false);
         webSlider.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
         webSlider.setPreferredSize(new java.awt.Dimension(270, 47));
         webSlider.addChangeListener(new javax.swing.event.ChangeListener() {

@@ -49,9 +49,9 @@ import net.sf.jasperreports.engine.xml.JRXmlLoader;
  */
 public abstract class JPanelReport extends JPanel implements JPanelView, BeanFactoryApp   {
     
-    private JRViewer400 reportviewer = null;          
-    private JasperReport jr = null;
-    private EditorCreator editor = null;
+    protected JRViewer400 reportviewer = null;
+    protected JasperReport jr = null;
+    protected EditorCreator editor = null;
             
     /**
      *
@@ -208,7 +208,7 @@ public abstract class JPanelReport extends JPanel implements JPanelView, BeanFac
         jToggleFilterActionPerformed(null);
     }
     
-    private void launchreport() {     
+    protected void launchreport() {
         
         m_App.waitCursorBegin();
         

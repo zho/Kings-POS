@@ -23,19 +23,14 @@ import com.openbravo.pos.config.JFrmConfig;
 import com.openbravo.pos.instance.AppMessage;
 import com.openbravo.pos.instance.InstanceManager;
 import com.openbravo.pos.util.OSValidator;
-import java.awt.BorderLayout;
-import java.awt.Dimension;
-import java.awt.Toolkit;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.io.IOException;
 import java.rmi.AlreadyBoundException;
 import java.rmi.RemoteException;
-import javax.swing.JFrame;
-
-import java.awt.GraphicsDevice;
-import java.awt.GraphicsEnvironment;
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
-import javax.swing.JOptionPane;
 
 /**
  *
@@ -164,7 +159,7 @@ public class JRootKiosk extends javax.swing.JFrame implements AppMessage {
 
     private void formWindowClosed(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosed
 
-        m_rootapp.releaseResources();
+//        m_rootapp.releaseResources();
         System.exit(0);
         
     }//GEN-LAST:event_formWindowClosed
